@@ -12,18 +12,9 @@
             </ul>
         </div>
         <table v-if="datesValidator.isValid && scheduleValidator.isValid" class="table table-bordered">
-            <thead>
-                <tr>
-                    <th rowspan="3">ФИО</th>
-                    <th v-for="(entry, index) in headerDates.years" :key="index" :colspan="entry.count">{{ entry.year }}</th>
-                </tr>
-                <tr>
-                    <th v-for="(entry, index) in headerDates.months" :key="index" :colspan="entry.count">{{ entry.month }}</th>
-                </tr>
-                <tr>
-                    <th v-for="(day, index) in headerDates.days" :key="index">{{ day }}</th>
-                </tr>
-            </thead>
+            <table-header
+                :datesProp="this.dates">
+            </table-header>
             <tbody>
                 <tr v-for="(worker, workerId) in workers" :key="workerId">
                     <th>{{ worker.name }}</th>
@@ -37,6 +28,8 @@
 </template>
 
 <script>
+import TableHeader from './TableHeader.vue'
+
 export default {
     name: 'schedule-table',
     props: {
@@ -44,6 +37,9 @@ export default {
             type: Object,
             required: true
         }
+    },
+    components: {
+        TableHeader
     },
     methods: {
         convertDate: function (date) {
@@ -142,62 +138,6 @@ export default {
         },
         scheduleValidator: function () {
             return this.checkIfScheduleIsConsistent(this.dates, this.workers, this.schedule)
-        },
-        headerDates: function () {
-            var result = {
-                years: [],
-                months: [],
-                days: []
-            }
-
-            for (var dateId in this.dates) {
-                var date = this.dates[dateId]
-
-                var year = result.years.find(function (value) { return value.year === date.getFullYear() })
-                if (year === undefined) {
-                    result.years.push({ year: date.getFullYear(), count: 1 })
-                } else {
-                    year.count++
-                }
-
-                var month = result.months.find(function (value) { return value.year === date.getFullYear() && value.month === date.getMonth() })
-                if (month === undefined) {
-                    result.months.push({ year: date.getFullYear(), month: date.getMonth(), count: 1 })
-                } else {
-                    month.count++
-                }
-
-                result.days.push(date.getDate())
-            }
-
-            for (var m in result.months) {
-                if (result.months[m].month === 0) {
-                    result.months[m].month = 'Январь'
-                } else if (result.months[m].month === 1) {
-                    result.months[m].month = 'Февраль'
-                } else if (result.months[m].month === 2) {
-                    result.months[m].month = 'Март'
-                } else if (result.months[m].month === 3) {
-                    result.months[m].month = 'Апрель'
-                } else if (result.months[m].month === 4) {
-                    result.months[m].month = 'Май'
-                } else if (result.months[m].month === 5) {
-                    result.months[m].month = 'Июнь'
-                } else if (result.months[m].month === 6) {
-                    result.months[m].month = 'Июль'
-                } else if (result.months[m].month === 7) {
-                    result.months[m].month = 'Август'
-                } else if (result.months[m].month === 8) {
-                    result.months[m].month = 'Сентябрь'
-                } else if (result.months[m].month === 9) {
-                    result.months[m].month = 'Октябрь'
-                } else if (result.months[m].month === 10) {
-                    result.months[m].month = 'Ноябрь'
-                } else if (result.months[m].month === 11) {
-                    result.months[m].month = 'Декабрь'
-                }
-            }
-            return result
         }
     }
 }
