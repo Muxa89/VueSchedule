@@ -1,19 +1,39 @@
 <template>
     <thead>
         <tr>
-            <th rowspan="3">ФИО</th>
+            <sortable-table-header-cell
+                rowspan="3"
+                :list-of-states="{
+                    'none': '',
+                    'down': 'fas fa-sort-alpha-down',
+                    'up': 'fas fa-sort-alpha-up'
+                }"
+            >
+            ФИО
+            </sortable-table-header-cell>
             <th v-for="(entry, index) in headerDates.years" :key="index" :colspan="entry.count">{{ entry.year }}</th>
         </tr>
         <tr>
             <th v-for="(entry, index) in headerDates.months" :key="index" :colspan="entry.count">{{ entry.month }}</th>
         </tr>
         <tr>
-            <th v-for="(day, index) in headerDates.days" :key="index">{{ day }}</th>
+            <sortable-table-header-cell
+                v-for="(day, index) in headerDates.days"
+                :key="index"
+                :list-of-states="{
+                    'none': '',
+                    'night': 'far fa-moon fa-xs',
+                    'day': 'far fa-sun fa-xs'
+                }"
+            > {{ day }}
+            </sortable-table-header-cell>
         </tr>
     </thead>
 </template>
 
 <script>
+import SortableTableHeaderCell from './SortableTableHeaderCell.vue'
+
 export default {
     name: 'table-header',
     props: {
@@ -21,6 +41,9 @@ export default {
             type: Object,
             required: true
         }
+    },
+    components: {
+        SortableTableHeaderCell
     },
     data: function () {
         return {
