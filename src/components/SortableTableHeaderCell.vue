@@ -14,7 +14,7 @@
         </div>
 
         <span
-            :class="this.listOfStates[current]"
+            :class="this.listOfStates[currentKey]"
             style="
                 position: absolute;
                 bottom:2px;
@@ -34,15 +34,25 @@ export default {
     },
     data: function () {
         return {
-            current: this.startState === undefined ? Object.keys(this.listOfStates)[0] : this.startState
+            currentKey: this.startState === undefined ? Object.keys(this.listOfStates)[0] : this.startState
+        }
+    },
+    watch: {
+        startState: function (value) {
+            this.currentKey = value === undefined ? Object.keys(this.listOfStates)[0] : value
         }
     },
     methods: {
         nextState: function () {
-            var currentIndex = Object.keys(this.listOfStates).indexOf(this.current)
-            currentIndex++
-            currentIndex %= Object.keys(this.listOfStates).length
-            this.current = Object.keys(this.listOfStates)[currentIndex]
+            var keys = Object.keys(this.listOfStates)
+            var currentIndex = keys.indexOf(this.currentKey)
+            currentIndex = (currentIndex + 1) % keys.length
+            this.currentKey = keys[currentIndex]
+            this.$emit('sort-order-changed', {
+                name: this.name,
+                key: this.currentKey,
+                value: this.listOfStates[this.currentKey]
+            })
         }
     }
 }

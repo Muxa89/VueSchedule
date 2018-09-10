@@ -18,14 +18,17 @@
         </tr>
         <tr>
             <sortable-table-header-cell
-                v-for="(day, index) in headerDates.days"
+                v-for="(date, index) in headerDates.days"
                 :key="index"
                 :list-of-states="{
                     'none': '',
                     'night': 'far fa-moon fa-xs',
                     'day': 'far fa-sun fa-xs'
                 }"
-            > {{ day }}
+                :name="date.fullDate.toISOString().slice(0, 10)"
+                :start-state="sortOrder[date.fullDate.toISOString().slice(0, 10)]"
+                @sort-order-changed="updateSortOrder($event)"
+            > {{ date.day }}
             </sortable-table-header-cell>
         </tr>
     </thead>
@@ -47,7 +50,25 @@ export default {
     },
     data: function () {
         return {
-            dates: this.datesProp
+            dates: this.datesProp,
+            sortOrder: (function (t) {
+                var res = {}
+                for (var i in t.datesProp) {
+                    res[t.datesProp[i].toISOString().slice(0, 10)] = 'none'
+                }
+                return res
+            })(this)
+        }
+    },
+    methods: {
+        updateSortOrder: function (event) {
+            for (var i in this.sortOrder) {
+                if (event.name === i) {
+                    this.$set(this.sortOrder, i, event.key)
+                } else {
+                    this.$set(this.sortOrder, i, 'none')
+                }
+            }
         }
     },
     computed: {
@@ -75,7 +96,7 @@ export default {
                     month.count++
                 }
 
-                result.days.push(date.getDate())
+                result.days.push({ day: date.getDate(), fullDate: date })
             }
 
             for (var m in result.months) {
