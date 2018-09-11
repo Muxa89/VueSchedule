@@ -8,6 +8,9 @@
                     'down': 'fas fa-sort-alpha-down',
                     'up': 'fas fa-sort-alpha-up'
                 }"
+                name="fio"
+                start-state="none"
+                @sort-order-changed="updateSortOrder($event)"
             >
             ФИО
             </sortable-table-header-cell>
@@ -27,7 +30,7 @@
                 }"
                 :name="date.fullDate.toISOString().slice(0, 10)"
                 :start-state="sortOrder[date.fullDate.toISOString().slice(0, 10)]"
-                @sort-order-changed="updateSortOrder($event)"
+                @sort-order-changed="updateDatesSortOrder($event)"
             > {{ date.day }}
             </sortable-table-header-cell>
         </tr>
@@ -50,12 +53,13 @@ export default {
     },
     data: function () {
         return {
-            dates: this.datesProp,
+            dates: window.Vue.util.extend({}, this.datesProp),
             sortOrder: (function (t) {
                 var res = {}
                 for (var i in t.datesProp) {
                     res[t.datesProp[i].toISOString().slice(0, 10)] = 'none'
                 }
+                res['fio'] = 'none'
                 return res
             })(this),
             monthNames: {
@@ -76,10 +80,13 @@ export default {
     },
     methods: {
         updateSortOrder: function (event) {
+            this.$set(this.sortOrder, event.name, event.key)
+        },
+        updateDatesSortOrder: function (event) {
             for (var i in this.sortOrder) {
                 if (event.name === i) {
                     this.$set(this.sortOrder, i, event.key)
-                } else {
+                } else if (i !== 'fio') {
                     this.$set(this.sortOrder, i, 'none')
                 }
             }
