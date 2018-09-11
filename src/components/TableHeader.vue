@@ -57,7 +57,21 @@ export default {
                     res[t.datesProp[i].toISOString().slice(0, 10)] = 'none'
                 }
                 return res
-            })(this)
+            })(this),
+            monthNames: {
+                0: 'Январь',
+                1: 'Февраль',
+                2: 'Март',
+                3: 'Апрель',
+                4: 'Май',
+                5: 'Июнь',
+                6: 'Июль',
+                7: 'Август',
+                8: 'Сентябрь',
+                9: 'Октябрь',
+                10: 'Ноябрь',
+                11: 'Декабрь'
+            }
         }
     },
     methods: {
@@ -99,32 +113,8 @@ export default {
                 result.days.push({ day: date.getDate(), fullDate: date })
             }
 
-            for (var m in result.months) {
-                if (result.months[m].month === 0) {
-                    result.months[m].month = 'Январь'
-                } else if (result.months[m].month === 1) {
-                    result.months[m].month = 'Февраль'
-                } else if (result.months[m].month === 2) {
-                    result.months[m].month = 'Март'
-                } else if (result.months[m].month === 3) {
-                    result.months[m].month = 'Апрель'
-                } else if (result.months[m].month === 4) {
-                    result.months[m].month = 'Май'
-                } else if (result.months[m].month === 5) {
-                    result.months[m].month = 'Июнь'
-                } else if (result.months[m].month === 6) {
-                    result.months[m].month = 'Июль'
-                } else if (result.months[m].month === 7) {
-                    result.months[m].month = 'Август'
-                } else if (result.months[m].month === 8) {
-                    result.months[m].month = 'Сентябрь'
-                } else if (result.months[m].month === 9) {
-                    result.months[m].month = 'Октябрь'
-                } else if (result.months[m].month === 10) {
-                    result.months[m].month = 'Ноябрь'
-                } else if (result.months[m].month === 11) {
-                    result.months[m].month = 'Декабрь'
-                }
+            for (var i in result.months) {
+                result.months[i].month = this.monthNames[result.months[i].month]
             }
             return result
         }
